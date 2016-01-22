@@ -1,0 +1,9 @@
+#!/bin/bash
+
+node gather
+DIR=$(cd $pwd $PUBLIC_DIR; pwd)/data
+./concat-latest > $DIR/latest.json
+echo "WRITE $DIR/latest.json"
+node create-configs
+node chart-render
+node dir-table

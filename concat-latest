@@ -1,0 +1,15 @@
+#!/bin/bash
+PUBLIC_DIR="${PUBLIC_DIR:-./public}"
+shopt -s nullglob
+declare -a jsons
+jsons=($PUBLIC_DIR/data/*-latest.json) # ${jsons[@]} now contains the list of files to concatenate
+echo '['
+if [ ${#jsons[@]} -gt 0 ]; then # if the list is not empty
+  cat "${jsons[0]}" # concatenate the first file to the result...
+  unset jsons[0]                     # and remove it from the list
+  for f in "${jsons[@]}"; do         # iterate over the rest
+      echo ","
+      cat "$f"
+  done
+fi
+echo ']'

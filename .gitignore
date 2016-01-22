@@ -1,0 +1,12 @@
+node_modules
+auth.js
+data
+test
+log.txt
+graphics
+public
+bloombergscripts.tgz
+*.log
+.env
+typings
+tsd.json
