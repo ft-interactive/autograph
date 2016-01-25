@@ -1,6 +1,6 @@
 {
   "name": "autograph",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "automate the retrieval of data and creation of charts",
   "main": "index.js",
   "scripts": {
