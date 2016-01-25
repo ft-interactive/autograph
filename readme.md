@@ -2,7 +2,7 @@
 
 > automate the retrieval of data and creation of charts
 
-[![Build Status][travis-image]][travis-url] [![Dependency Status][devdeps-image]][devdeps-url]
+[![Build Status][travis-image]][travis-url] [![Dependency Status][devdeps-image]][devdeps-url] [![Dev dependency Status][devdeps-image]][devdeps-url]
 
 ## Run locally
 
@@ -51,6 +51,9 @@ This software is published by the Financial Times under the [MIT licence](http:/
 <!-- badge URLs -->
 [travis-url]: http://travis-ci.org/ft-interactive/autograph
 [travis-image]: https://img.shields.io/travis/ft-interactive/autograph.svg?style=flat-square
+
+[deps-url]: https://david-dm.org/ft-interactive/autograph#info=dependencies
+[deps-image]: https://img.shields.io/david/ft-interactive/autograph.svg?style=flat-square
 
 [devdeps-url]: https://david-dm.org/ft-interactive/autograph#info=devDependencies
 [devdeps-image]: https://img.shields.io/david/dev/ft-interactive/autograph.svg?style=flat-square
