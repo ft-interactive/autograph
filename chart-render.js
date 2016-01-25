@@ -58,7 +58,7 @@ function createLines(data) {
 			svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 				.each(function (datum) {
 					var container = d3.select(this);
-					var seriesKeys = _.pluck(datum.y.series, 'key');
+					var seriesKeys = _.map(datum.y.series, 'key');
 
 					if (!datum.xDomain) {
 						datum.xDomain = d3.extent(datum.data,  d => dateFormat.parse(d[datum.x.series]));

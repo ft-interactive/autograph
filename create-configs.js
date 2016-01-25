@@ -87,7 +87,7 @@ request({ uri: process.env.CHARTS_URL, json: true }).then(data => {
 		}
 
 		if (seriesNames.length > 1) {
-			build_artifacts.save_dataset(_.pluck(seriesNames, 'key'), merged);
+			build_artifacts.save_dataset(_.map(seriesNames, 'key'), merged);
 		}
 
 		var source = chart.source;
@@ -157,7 +157,7 @@ function mergeData(series, keyProperty) {
 	var merged = [];
 
 	for (var seriesName in series) {
-		seriesIndices[seriesName] = _.indexBy(series[seriesName], keyProperty);
+		seriesIndices[seriesName] = _.keyBy(series[seriesName], keyProperty);
 		keys = keys.concat(Object.keys(seriesIndices[seriesName]));
 	}
 
