@@ -2,7 +2,7 @@
 
 > automate the retrieval of data and creation of charts
 
-[![Build Status][travis-image]][travis-url] [![Dependency Status][devdeps-image]][devdeps-url] [![Dev dependency Status][devdeps-image]][devdeps-url]
+[![Build Status][travis-image]][travis-url] [![Dependency Status][deps-image]][deps-url] [![Dev dependency Status][devdeps-image]][devdeps-url]
 
 ## Run locally
 
