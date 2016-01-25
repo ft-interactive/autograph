@@ -38,7 +38,7 @@ function rebase(series, date, base) {
 		return result;
 	}, { interval: null, value: null });
 
-	if (typeof base !== 'number') {
+	if (!Number.isFinite(base)) {
 		base = 100;
 	}
 
