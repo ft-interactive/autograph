@@ -50,7 +50,8 @@ value_keys.forEach(a => {
 });
 
 const series_functions = {
-	rebase: require('./rebase')
+	rebase: require('./rebase'),
+	'rolling-annual-total': require('./rolling-annual-total')
 };
 
 function transform_dataset(dataset) {
@@ -69,7 +70,9 @@ function transform_dataset(dataset) {
 		return dataset;
 	}
 
-	const args = dataset.transform.arguments;
+	const args = dataset.transform.arguments.map(arg => {
+		return value_functions[arg] ? value_functions[arg] : arg; 
+	});
 	
 	if (value_fn) {
 		dataset.data = dataset.data.map(row => {
@@ -85,6 +88,5 @@ function transform_dataset(dataset) {
 }
 
 function divide(value) {
-	return value / this;
+	return value == null ? null : (value / this);
 }
-
