@@ -21,6 +21,15 @@ if (!process.env.QUERIES_URL) {
 	throw new Error('env variable QUERIES_URL is required');
 }
 
+let ignored_apis = [];
+
+if (process.env.IGNORE_APIS) {
+	ignored_apis = process.env.IGNORE_APIS.split(/,\s*/g).map(s => s.toLowerCase());
+	if (ignored_apis.length) {
+		console.log('%d ignored APIs: "%s"', ignored_apis.length, ignored_apis.join('", "'));
+	}
+}
+
 console.log('Checking data');
 
 request({ url: process.env.QUERIES_URL, json: true })
@@ -47,7 +56,12 @@ function fetch_endpoint(query) {
 	const factory = apis[api_name];
 
 	if (!factory) {
-		console.error('"%s" is not a known API', query.api);
+		console.error('"%s" is not a known API on "%s"', query.api, query.id);
+		return;
+	}
+	
+	if (ignored_apis.indexOf(api_name) !== -1) {
+		console.warn('"%s" is currently an ignored API on "%s"', api_name, query.id);
 		return;
 	}
 
