@@ -69,7 +69,7 @@ function pluck_data(data) {
 		throw new Error('Cannot find <timePoints> element in CEIC response');
 	}
 
-	this.data = timePoints.map(d => {
+	this.data = timePoints.reverse().map(d => {
 		return {
 			date: d.date[0],
 			value: Number(d.value[0]),
