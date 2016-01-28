@@ -51,7 +51,8 @@ value_keys.forEach(a => {
 
 const series_functions = {
 	rebase: require('./rebase'),
-	'rolling-annual-total': require('./rolling-annual-total')
+	'rolling-annual-total': require('./rolling-annual-total'),
+	'year-on-year': require('./year-on-year')
 };
 
 function transform_dataset(dataset) {
