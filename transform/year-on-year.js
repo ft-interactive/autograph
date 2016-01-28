@@ -1,7 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
-
 module.exports = year_on_year;
 
 function year_on_year(series) {

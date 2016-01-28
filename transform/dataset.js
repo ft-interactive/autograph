@@ -52,7 +52,9 @@ value_keys.forEach(a => {
 const series_functions = {
 	rebase: require('./rebase'),
 	'rolling-annual-total': require('./rolling-annual-total'),
-	'year-on-year': require('./year-on-year')
+	'year-on-year': require('./year-on-year'),
+	'quarter-on-quarter': require('./quarter-on-quarter'),
+	'month-on-month': require('./month-on-month')
 };
 
 function transform_dataset(dataset) {
