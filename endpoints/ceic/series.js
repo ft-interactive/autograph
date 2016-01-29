@@ -34,7 +34,7 @@ function create_CEIC_job(options) {
 
 function pluck_data(data) {
 
-	// console.log(util.inspect(data, false, null));
+	console.log(util.inspect(data, false, null));
 
 	if (!data.isearch_response) {
 		throw new Error('Invalid CEIC API response');
@@ -70,11 +70,17 @@ function pluck_data(data) {
 	}
 
 	this.data = timePoints.reverse().map(d => {
+		
+		// Some rows in the CEIC's timeseries data
+		// have just dates but no values.
+		// For now we'll just throw out those rows.
+		if (!d.value) return;
+
 		return {
 			date: d.date[0],
 			value: Number(d.value[0]),
 		};
-	});
+	}).filter(Boolean);
 
 	return this;
 }
