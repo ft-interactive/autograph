@@ -5,7 +5,7 @@ const writeIfNew = require('./util/write-if-new');
 const build_artifacts = require('./util/build-artifacts');
 const csvs = build_dataset_list();
 const svgs = build_chart_list();
-const styles = 'html{font-family:sans-serif}.datasets{font-family:monospace;margin:20px;border-spacing:0;}.datasets td{padding:3px 5px;}.chart{width:320px;float:left;margin:20px;border-top:1px solid black;}.today{background-color:#FF4136;color:#800600;}.today a{color:#fff;}.label{border-radius:2px;padding:3px;font-size:11px;}';
+const styles = 'html{font-family:sans-serif}.datasets{font-family:monospace;margin:20px;border-spacing:0;}.datasets td{padding:3px 5px;}.chart{width:260px;float:left;margin:20px;border-top:1px solid black;}.today{background-color:#FF4136;color:#800600;}.today a{color:#fff;}.label{border-radius:2px;padding:3px;font-size:11px;}';
 const html = '<!doctype html><html><head><title>economic data CSVs</title><style>' + styles + '</style></head><body><h1>Economic data</h1><nav>Jump to: <a href="#datasets">CSV downloads</a> | <a href="#charts">Charts</a></nav><h2 id="datasets">CSV downloads</h2>' + csvs + '<hr/><h2 id="charts">Charts</h2>' + svgs + '</body></html>';
 
 writeIfNew(process.env.PUBLIC_DIR + '/index.html', html);
