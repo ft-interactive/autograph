@@ -34,7 +34,7 @@ function create_CEIC_job(options) {
 
 function pluck_data(data) {
 
-	console.log(util.inspect(data, false, null));
+	// console.log(util.inspect(data, false, null));
 
 	if (!data.isearch_response) {
 		throw new Error('Invalid CEIC API response');
@@ -58,7 +58,7 @@ function pluck_data(data) {
 			throw new Error('Data returned is not for the requested series');
 		}
 	} catch (e) {
-		throw new Error('Invalid CEIC response XML. Cannot verify the series code');
+		throw new Error('Invalid CEIC response XML. Cannot verify the series code "%"', this.params.series_id);
 	}
 
 	let timePoints;
