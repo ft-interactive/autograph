@@ -20,13 +20,17 @@ function year_on_year(series) {
 	});
 
 	series = series.map((d, i, s) => {
-		if (i >= 12) {
-			let year1 = s[i - 12]._value;
-			let year2 = d._value; 
-			d.value = ((year2 - year1) / year1) * 100;
+
+		if (i < 12) {
+			return d;
 		}
 
+		const year1 = s[i - 12]._value;
+		const year2 = d._value; 
+		d.value = ((year2 - year1) / year1) * 100;
+
 		return d;
+
 	});
 
 	return series;
