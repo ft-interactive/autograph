@@ -61,7 +61,7 @@ function createLines(data) {
 					var seriesKeys = _.map(datum.y.series, 'key');
 
 					if (!datum.xDomain) {
-						datum.xDomain = d3.extent(datum.data,  d => dateFormat.parse(d[datum.x.series]));
+						datum.xDomain = d3.extent(datum.data,  d => new Date(d[datum.x.series]));
 					}
 
 					if (!datum.yDomain) {
@@ -141,34 +141,19 @@ function createLines(data) {
 					container.selectAll('.y.axis .highlight-line').attr(SVGStyles.valueHighlight);
 
 					if (seriesKeys.length > 1) {
-						var isKey = true;
+
 						container.append('g')
 							.attr('class', 'chart-key')
 							.attr(SVGStyles.keyContainer);
-					} else {
-						isKey = false;
-					}
-
-					var linesContainer = container.append('g');
-
-					seriesKeys.forEach(function (key, i) {
-						var line = d3.svg.line()
-							.x(d => xScale(dateFormat.parse(d.date)))
-							.y(d => yScale(d[key]));
-
-						linesContainer.append('path')
-							.attr('d', line(datum.data))
-							.attr(SVGStyles.seriesLine)
-							.attr('stroke', () => SVGStyles.seriesLineColours[i]);
-
-						if (isKey) {
-
+					
+						seriesKeys.forEach(function (key, i) {
+							
 							var keyElement = container.select('.chart-key')
-																	.append('g')
-																	.attr({
-																		'class': 'key-element',
-																		'transform': 'translate(0,' + (i * keyElementHeight) + ')'
-																	});
+										.append('g')
+										.attr({
+											'class': 'key-element',
+											'transform': 'translate(0,' + (i * keyElementHeight) + ')'
+										});
 
 							keyElement.append('text')
 								.attr('x', keyLineLength + 3)
@@ -183,9 +168,26 @@ function createLines(data) {
 									y2: -keyElementHeight / (SVGStyles.keyText['font-size'] / 3)
 								})
 								.attr(SVGStyles.seriesLine)
-								.attr('stroke', () => SVGStyles.seriesLineColours[i]);
+								.attr('stroke', SVGStyles.seriesLineColours[i]);
+						});
+					}
 
-						}
+					var linesContainer = container.append('g');
+					var line_colors = SVGStyles.seriesLineColours.slice(0, seriesKeys.length);
+
+					// take a shallow copy of the array and reverse the order
+					// so that most important line is drawn on top, least important at the bottom
+					seriesKeys.slice(0).reverse().forEach(function (key, i) {
+
+						const line = d3.svg.line()
+							.defined(d => d[key] != null && !isNaN(d[key]))
+							.x(d => xScale(new Date(d.date)))
+							.y(d => yScale(d[key]));
+
+						linesContainer.append('path')
+							.attr('d', line(datum.data))
+							.attr(SVGStyles.seriesLine)
+							.attr('stroke', line_colors.pop());
 
 					});
 

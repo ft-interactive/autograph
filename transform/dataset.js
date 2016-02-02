@@ -64,7 +64,7 @@ function transform_dataset(dataset) {
 	if (!function_name) {
 		return dataset;
 	}
-	
+
 	const value_fn = value_functions[function_name];
 	const series_function = series_functions[function_name];
 
@@ -76,7 +76,7 @@ function transform_dataset(dataset) {
 	const args = dataset.transform.arguments.map(arg => {
 		return value_functions[arg] ? value_functions[arg] : arg; 
 	});
-	
+
 	if (value_fn) {
 		dataset.data = dataset.data.map(row => {
 			row._value = row.value;

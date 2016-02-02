@@ -25,11 +25,12 @@ request({ uri: process.env.CHARTS_URL, json: true }).then(data => {
 		// load the data files for each index...
 
 		var series = {};
+		var y_series = chart.series.map((d, i) => ({ key: d, label: chart.labels[i]|| d }));
 
 		chart.series.forEach(function (s) {
 
 			let dataset;
-			
+
 			try {
 				dataset	= build_artifacts.read_dataset(s);
 			} catch (e) {
@@ -41,53 +42,30 @@ request({ uri: process.env.CHARTS_URL, json: true }).then(data => {
 				throw e;
 			}
 
-			series[slug(s)] = dataset.data.map(function (d) {
-				var o = {};
-				o[s] = d.value;
-				o.date = d.date;
-				return o;
-			});
-
 			chart.updated = dataset.last_updated;
 
-			series[slug(s)] = series[slug(s)].filter(function (d) {
-				if (chart.start && (dateFormat.parse(d.date).getTime() < (new Date(chart.start)).getTime())) {
-					return false;
-				}
-				if (chart.end && (dateFormat.parse(d.date).getTime() > (new Date(chart.end)).getTime())) {
-					return false;
-				}
-				return true;
-			});
+			const series_slug = slug(s);
+			const start_time = chart.start ? (new Date(chart.start)).getTime() : Number.NEGATIVE_INFINITY;
+			const end_time = chart.end ? (new Date(chart.end)).getTime() : Infinity;
+
+			series[series_slug] = dataset.data.map(d => {
+				const num = Number(d.value);
+				return {
+					date: dateFormat.parse(d.date).getTime(),
+					[s]: d.value === '' ? null : (Number.isFinite(num) ? num : null)
+				};
+			}).filter(d => d.date >= start_time && d.date <= end_time);
 
 		});
 
 		//construct the o-charts line chart config
-		var merged = mergeData(series, 'date');
+		var merged = mergeData(series, 'date').sort((a,b) => a.date - b.date);
+		var columns_with_data = seriesData(merged, ['date']);
+		
+		const y_series_with_data = _.intersectionBy(y_series, columns_with_data, 'key');	
 
-		var seriesNames = seriesData(merged, ['date']);
-
-		// override series labels
-		let seriesNames_copy = seriesNames.slice(0);
-		let o;
-
-		for (let i = 0; i < chart.labels.length; i++) {
-			if (!seriesNames_copy.length) {
-				break;
-			}
-			if (chart.labels[i]) {
-				chart.labels[i] = chart.labels[i].toString().trim();
-			}
-			if (seriesNames_copy[0].key === chart.series[i]) {
-				o = seriesNames_copy.shift();
-				if (chart.labels[i]) {
-					o.label = chart.labels[i];
-				}
-			} 
-		}
-
-		if (seriesNames.length > 1) {
-			build_artifacts.save_dataset(_.map(seriesNames, 'key'), merged);
+		if (y_series_with_data.length > 1) {
+			build_artifacts.save_dataset(_.map(y_series_with_data, 'key'), merged);
 		}
 
 		var source = chart.source;
@@ -105,7 +83,7 @@ request({ uri: process.env.CHARTS_URL, json: true }).then(data => {
 					series: 'date'
 				},
 				y: {
-					series: seriesNames
+					series: y_series_with_data
 				},
 				data: merged
 			};
@@ -131,7 +109,7 @@ request({ uri: process.env.CHARTS_URL, json: true }).then(data => {
 		}
 	}
 
-});
+	});
 
 function seriesData(a, exclude) {
 
@@ -143,11 +121,7 @@ function seriesData(a, exclude) {
 			}
 		}
 	});
-	return Object.keys(series).map(function (d) {
-		return {
-			'key': d, 'label': d
-		};
-	});
+	return Object.keys(series).map(k => ({key: k}));
 }
 
 // Merge a set of arrays of objects, joining said objects together based on a named property
