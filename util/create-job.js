@@ -31,6 +31,7 @@ module.exports = function (data, options) {
 		fn: data.transform['function'] || null,
 		arguments: data.transform.arguments
 	};
+	o.date_format = date_format;
 	o.params = {};
 	o.params.start_date = create_date(data.start, date_format);
 	o.params.end_date = create_date(data.end, date_format);

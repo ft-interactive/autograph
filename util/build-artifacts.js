@@ -6,6 +6,7 @@ if (!process.env.PUBLIC_DIR) {
 
 const fs = require('fs');
 const d3 = require('d3');
+const date_format = d3.time.format('%Y-%m-%d');
 const slug = require('speakingurl');
 const mkdirp = require('mkdirp');
 const path = require('path');
@@ -43,6 +44,11 @@ exports.save_dataset = function (id, data) {
 		throw new Error('Data argument is not of type Array');
 	}
 
+	data = data.map(d => {
+		d.date = date_format(d.date);
+		return d;
+	}).filter(d => !Number.isNaN(d.date));
+
 	writeIfNew(data_dir + '/' + slug(id) + '.csv', d3.csv.format(data));
 };
 
@@ -56,7 +62,10 @@ exports.read_dataset = function (id) {
 	const content = fs.readFileSync(filename, 'utf-8');
 	const last_updated = fs.statSync(filename).mtime;
 	dataset.last_updated = last_updated;
-	dataset.data = d3.csv.parse(content);
+	dataset.data = d3.csv.parse(content).map(d => {
+		d.date = date_format.parse(d.date.toString());
+		return d;	
+	});
 	return dataset;
 };
 

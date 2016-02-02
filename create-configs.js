@@ -45,14 +45,14 @@ request({ uri: process.env.CHARTS_URL, json: true }).then(data => {
 			chart.updated = dataset.last_updated;
 
 			const series_slug = slug(s);
-			const start_time = chart.start ? (new Date(chart.start)).getTime() : Number.NEGATIVE_INFINITY;
-			const end_time = chart.end ? (new Date(chart.end)).getTime() : Infinity;
+			const start_time = chart.start ? new Date(chart.start) : Number.NEGATIVE_INFINITY;
+			const end_time = chart.end ? new Date(chart.end) : Infinity;
 
 			series[series_slug] = dataset.data.map(d => {
-				const num = Number(d.value);
+				const num = Number.parseFloat(d.value);
 				return {
-					date: dateFormat.parse(d.date).getTime(),
-					[s]: d.value === '' ? null : (Number.isFinite(num) ? num : null)
+					date: d.date,
+					[s]: Number.isNaN(num) ? null : num
 				};
 			}).filter(d => d.date >= start_time && d.date <= end_time);
 

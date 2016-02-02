@@ -66,7 +66,8 @@ function fetch_endpoint(query) {
 	}
 
 	const promise = factory(query);
-
+	
+	promise.then(strings_to_dates);
 	promise.then(transform.dataset);
 	promise.then(save_latest);
 	promise.then(save_data_changes);
@@ -74,6 +75,17 @@ function fetch_endpoint(query) {
 	return promise;
 }
 
+function strings_to_dates(job) {
+	if (job.date_format)
+
+	job.data = job.data.map(d => {
+		d.date = job.date_format.parse(d.date);
+		return d;
+	});
+
+	return job;
+	
+}
 function handle_endpoint__exception(reason) {
 	if (!reason.statusCode && reason instanceof Error) {
 		if (reason.url) {
