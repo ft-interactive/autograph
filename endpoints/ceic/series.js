@@ -47,9 +47,13 @@ function pluck_data(data) {
 
 	if (data.isearch_response.status &&
 				data.isearch_response.status[0] &&
-				data.isearch_response.status[0].message &&
-				data.isearch_response.status[0].message[0] === 'Incompleted response') {
-		throw new Error('Unknown CEIC series ' + this.params.series_id)
+				data.isearch_response.status[0].message) {
+		if (data.isearch_response.status[0].message[0] === 'Incompleted response') {
+			throw new Error('Unknown CEIC series ' + this.params.series_id)
+		} else if (data.isearch_response.status[0].message[0] === 'Unexpected Exception' &&
+									data.isearch_response.status[0].code[0] === 'JSONERROR') {
+			throw new Error('CEIC API error, possibly rate limited - series code ' + this.params.series_id)
+		}
 	}
 
 	try {
