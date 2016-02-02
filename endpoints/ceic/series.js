@@ -58,7 +58,7 @@ function pluck_data(data) {
 			throw new Error('Data returned is not for the requested series');
 		}
 	} catch (e) {
-		throw new Error('Invalid CEIC response XML. Cannot verify the series code "%"', this.params.series_id);
+		throw new Error('Invalid CEIC response XML. Cannot verify the series code ' + this.params.series_id);
 	}
 
 	let timePoints;
