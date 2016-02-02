@@ -181,8 +181,8 @@ function createLines(data) {
 
 						const line = d3.svg.line()
 							.defined(d => d[key] != null && !isNaN(d[key]))
-							.x(d => xScale(new Date(d.date)))
-							.y(d => yScale(d[key]));
+							.x(d => round_3dp(xScale(new Date(d.date))))
+							.y(d => round_3dp(yScale(d[key])));
 
 						linesContainer.append('path')
 							.attr('d', line(datum.data))
@@ -202,4 +202,8 @@ function createLines(data) {
 
 	});
 
+}
+
+function round_3dp(x) {
+	return Math.round(x * 1000) / 1000;
 }
