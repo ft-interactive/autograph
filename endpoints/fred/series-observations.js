@@ -21,18 +21,20 @@ module.exports = function (job, options) {
 			series_id: job.params.series_id
 		},
 		type: 'json',
-	}).then(pluck_data.bind(job));
-};
+	}).then(data => {
 
-function pluck_data(data) {
-	if (!data.observations) {
-		throw new Error('No data observations on response');
-	}
-	this.data = data.observations.map((d) => {
-		return { date: d.date, value: d.value };
+		if (!data.observations) {
+			throw new Error('No data observations on response');
+		}
+
+		job.data = data.observations.map((d) => {
+			return { date: d.date, value: d.value };
+		});
+
+		return job;
+
 	});
-	return this;
-}
+};
 
 /* 
 

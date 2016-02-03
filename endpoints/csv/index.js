@@ -1,26 +1,6 @@
 'use strict';
 
 const fetch = require('../../util/fetch');
-const fs = require('fs');
-
-function pluck_data(data) {
-
-	if (!this.params.fields) {
-		this.data = data;
-		return this;
-	}
-
-
-	this.data = data.map(d => {
-		const result = {};
-		for (let field of this.params.fields) {
-			result[field[0]] = d[field[1]];
-		}
-		return result;
-	});
-
-	return this;
-}
 
 module.exports = function (job, options) {
 
@@ -40,5 +20,22 @@ module.exports = function (job, options) {
 	return fetch({
 		uri: job.params.url,
 		type: 'csv'
-	}).then(pluck_data.bind(job));
+	}).then(data => {
+
+		if (!job.params.fields) {
+			job.data = data;
+			return job;
+		}
+
+		job.data = data.map(d => {
+			const result = {};
+			for (let field of job.params.fields) {
+				result[field[0]] = d[field[1]];
+			}
+			return result;
+		});
+
+		return job;
+
+	});
 };

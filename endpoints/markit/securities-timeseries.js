@@ -29,23 +29,22 @@ module.exports = function (job, options) {
 			symbols: job.params.series_id
 		},
 		type: 'json',
-	}).then(pluck_data.bind(job));
+	}).then(data => {
 
-};
+		if (data.error) {
+			throw new Error(data.error.errors[0].reason + ': ' + data.error.errors[0].message);
+		}
 
-function pluck_data(data) {
+		if (!data.data || !data.data.items[0] || !data.data.items[0].timeSeries || !Array.isArray(data.data.items[0].timeSeries.timeSeriesData)) {
+			throw new Error('Unknown timeseries format on Markit API response');
+		}
 
-	if (data.error) {
-		throw new Error(data.error.errors[0].reason + ': ' + data.error.errors[0].message);
-	}
+		job.data = data.data.items[0].timeSeries.timeSeriesData.map((d) => {
+			return { date: d.lastClose, value: d[job.params.value] };
+		});
 
-	if (!data.data || !data.data.items[0] || !data.data.items[0].timeSeries || !Array.isArray(data.data.items[0].timeSeries.timeSeriesData)) {
-		throw new Error('Unknown timeseries format on Markit API response');
-	}
+		return job;
 
-	this.data = data.data.items[0].timeSeries.timeSeriesData.map((d) => {
-		return { date: d.lastClose, value: d[this.params.value] };
 	});
 
-	return this;
-}
+};

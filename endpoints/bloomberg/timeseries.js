@@ -17,20 +17,20 @@ module.exports = function (job, options) {
 		},
 		json: true,
 		auth: auth.credentials
-	}).then(pluck_data.bind(job));
-}
+	}).then(data => {
 
-function pluck_data(data) {
-	if (!data.data) {
-		throw new Error('No data attribute on response');
-	} else if (data.data.null) {
-		throw new Error('Undefined data series');
-	} else if (!data.data[this.params.series_id]) {
-		throw new Error(`Security symbol ${this.params.series_id} not found`);
-	} else if (!data.data[this.params.series_id][this.params.fields]) {
-		throw new Error(`Field ${this.params.fields} not found on symbol ${this.params.series_id}`);
-	}
+		if (!data.data) {
+			throw new Error('No data attribute on response');
+		} else if (data.data.null) {
+			throw new Error('Undefined data series');
+		} else if (!data.data[job.params.series_id]) {
+			throw new Error(`Security symbol ${job.params.series_id} not found`);
+		} else if (!data.data[job.params.series_id][job.params.fields]) {
+			throw new Error(`Field ${job.params.fields} not found on symbol ${job.params.series_id}`);
+		}
 
-	this.data = data.data[this.params.series_id][this.params.fields];
-	return this;
+		job.data = data.data[job.params.series_id][job.params.fields];
+		return job;
+
+	});
 }
