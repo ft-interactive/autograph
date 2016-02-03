@@ -1,6 +1,5 @@
 'use strict';
 
-const create_job = require('../../util/create-job');
 const fetch = require('../../util/fetch');
 const fs = require('fs');
 
@@ -23,8 +22,7 @@ function pluck_data(data) {
 	return this;
 }
 
-function create_csv_job(options) {
-	const job = create_job(options);
+module.exports = function (job, options) {
 
 	job.params.url = job.params.series_id;
 
@@ -38,13 +36,6 @@ function create_csv_job(options) {
 			}
 		}
 	}
-
-	return job;
-}
-
-module.exports = function (options) {
-
-	const job = create_csv_job(options);
 
 	return fetch({
 		uri: job.params.url,

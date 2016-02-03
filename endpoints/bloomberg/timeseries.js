@@ -1,15 +1,13 @@
 'use strict';
 
-const d3 = require('d3');
-const dateFormat = d3.time.format('%Y-%m-%d');
 const fetch = require('../../util/fetch');
-const create_job = require('../../util/create-job');
 const auth = require('./auth');
 
-module.exports = function (options) {
+module.exports = function (job, options) {
 
-	const job = create_bloomberg_job(options);
-	const req = {
+	job.params.fields = decodeURI(options.fields);
+
+	return fetch({
 		uri: 'https://syndication.bloomberg.com/finance/v2/history',
 		qs: {
 			securities: job.params.series_id,
@@ -19,14 +17,7 @@ module.exports = function (options) {
 		},
 		json: true,
 		auth: auth.credentials
-		};
-		return fetch(req).then(pluck_data.bind(job));
-}
-
-function create_bloomberg_job(options) {
-	const job = create_job(options, { date_format: '%Y-%m-%d' });
-	job.params.fields = decodeURI(options.fields);
-	return job;
+	}).then(pluck_data.bind(job));
 }
 
 function pluck_data(data) {

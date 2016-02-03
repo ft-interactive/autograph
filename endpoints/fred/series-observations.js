@@ -6,15 +6,11 @@
 *
 */
 
-const d3 = require('d3');
-const dateFormat = d3.time.format('%Y-%m-%d');
 const fetch = require('../../util/fetch');
-const create_job = require('../../util/create-job');
 const auth = require('./auth');
 
-module.exports = function (options) {
-	const job = create_fred_job(options);
-	const req = {
+module.exports = function (job, options) {
+	return fetch({
 		uri: 'https://api.stlouisfed.org/fred/series/observations',
 		qs: {
 			file_type: 'json',
@@ -25,14 +21,8 @@ module.exports = function (options) {
 			series_id: job.params.series_id
 		},
 		type: 'json',
-	};
-	return fetch(req).then(pluck_data.bind(job));
+	}).then(pluck_data.bind(job));
 };
-
-function create_fred_job(options) {
-	const job = create_job(options, { date_format: '%Y-%m-%d' });
-	return job;
-}
 
 function pluck_data(data) {
 	if (!data.observations) {

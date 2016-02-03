@@ -6,6 +6,7 @@ const save_latest = require('./util/save-latest');
 const save_data_changes = require('./util/save-changes');
 const endpoints = require('./endpoints');
 const transform = require('./transform');
+const create_job = require('./util/create-job');
 
 const apis = {
 	bloomberg: endpoints.bloomberg.timeseries,
@@ -65,8 +66,8 @@ function fetch_endpoint(query) {
 		return;
 	}
 
-	const promise = factory(query);
-	
+	const promise = factory(create_job(query), query);
+
 	promise.then(strings_to_dates);
 	promise.then(transform.dataset);
 	promise.then(save_latest);
@@ -76,16 +77,20 @@ function fetch_endpoint(query) {
 }
 
 function strings_to_dates(job) {
-	if (job.date_format)
-
-	job.data = job.data.map(d => {
-		d.date = job.date_format.parse(d.date);
-		return d;
-	});
-
+	var date_factory = job.date_format.response || (s => new Date(s));
+	job.data = job.data
+								// remove null rows
+								.filter(Boolean)
+								// convert date strings to date objects
+								.map(d => {
+										d.date = d.date && date_factory(d.date);
+										return d;
+								})
+								// remove rows where date is null or invalid date
+								.filter(d => d.date != null && !Number.isNaN(+d.date));
 	return job;
-	
 }
+
 function handle_endpoint__exception(reason) {
 	if (!reason.statusCode && reason instanceof Error) {
 		if (reason.url) {

@@ -22,23 +22,31 @@ function create_date(input_string, format) {
 }
 
 module.exports = function (data, options) {
+
 	// These values are coming from a spreadsheet so dont trust
 	// them, they may have formatting issues.
-	options = options || {};
-	const date_format = d3.time.format(options.date_format || '%Y-%m-%d');
-	const o = {};
-	o.transform = {
-		fn: data.transform['function'] || null,
-		arguments: data.transform.arguments
-	};
-	o.date_format = date_format;
-	o.params = {};
-	o.params.start_date = create_date(data.start, date_format);
-	o.params.end_date = create_date(data.end, date_format);
-	o.params.series_id = decodeURI(data.seriesid);
+	const date_format = d3.time.format('%Y-%m-%d');
 
-	o.id = o.ftname = data.id;
-	o.slug = get_slug(o.id);
-	o.units = data.units;
-	return o;
+	return {
+
+		id: data.id,
+		slug: get_slug(data.id),
+		units: data.units,
+
+		transform: {
+			fn: data.transform['function'] || null,
+			arguments: data.transform.arguments
+		},
+
+		date_format: {
+			request: date_format,
+			response: date_format.parse
+		},
+
+		params: {
+			series_id: decodeURI(data.seriesid),
+			start_date: create_date(data.start, date_format),
+			end_date: create_date(data.end, date_format),
+		}
+	};
 }

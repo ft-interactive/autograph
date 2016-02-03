@@ -1,34 +1,37 @@
 'use strict';
 
 const fetch = require('../../util/fetch');
-const create_job = require('../../util/create-job');
 const auth = require('./auth');
 
-module.exports = function (options) {
-	const job = create_custom_job(options);
-	const req = {
+const values = ['close', 'open', 'high', 'low', 'volume'];
+const default_value = values[0];
+
+module.exports = function (job, options) {
+
+	job.params.value = options.fields ? decodeURI(options.fields) : default_value;
+	
+	// Markit API response uses ISO 8601 timestamps
+	// which we can be parsed by javascript's Date constructor
+	// so we dont want/need a D3 formatter
+	job.date_format.response = (s => {
+		return new Date(s)
+	});
+
+	if (values.indexOf(job.params.value) === -1) {
+		console.error('Warning: "%s" is not a valid time series field. Valid fields are: %s', job.params.value, values.join(', '));
+		job.params.value = default_value;
+	}
+
+	return fetch({
 		uri: 'http://markets.ft.com/research/webservices/securities/v1/time-series',
 		qs: {
 			source: auth.api_key,
 			symbols: job.params.series_id
 		},
 		type: 'json',
-	};
-	return fetch(req).then(pluck_data.bind(job));
+	}).then(pluck_data.bind(job));
+
 };
-
-const values = ['close', 'open', 'high', 'low', 'volume'];
-const default_value = values[0];
-
-function create_custom_job(options) {
-	const job = create_job(options, { date_format: '%Y-%m-%d' });
-	job.params.value = options.fields ? decodeURI(options.fields) : default_value;
-	if (values.indexOf(job.params.value) === -1) {
-		console.error('Warning: "%s" is not a valid time series field. Valid fields are: %s', job.params.value, values.join(', '));
-		job.params.value = default_value;
-	}
-	return job;
-}
 
 function pluck_data(data) {
 

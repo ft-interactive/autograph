@@ -1,14 +1,10 @@
 'use strict';
 
 const fetch = require('../../util/fetch');
-const create_job = require('../../util/create-job');
-const util = require('util');
 const auth = require('./auth');
 
-module.exports = function (options) {
-
-	const job = create_CEIC_job(options);
-	const req = {
+module.exports = function (job, options) {
+	return fetch({
 		uri: 'https://cisearch.ceicdata.com/xml/request',
 		qs: {
 			uid: auth.credentials.user,
@@ -22,19 +18,12 @@ module.exports = function (options) {
 			series: job.params.series_id
 		},
 		type: 'xml'
-	};
-
-	return fetch(req).then(pluck_data.bind(job));
-}
-
-function create_CEIC_job(options) {
-	const job = create_job(options, { date_format: '%Y-%m-%d' });
-	return job;
+	}).then(pluck_data.bind(job));
 }
 
 function pluck_data(data) {
 
-	// console.log(util.inspect(data, false, null));
+	// console.log(require('util').inspect(data, false, null));
 
 	if (!data.isearch_response) {
 		throw new Error('Invalid CEIC API response');
