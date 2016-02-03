@@ -49,6 +49,10 @@ exports.save_dataset = function (id, data) {
 		return d;
 	}).filter(d => !Number.isNaN(d.date));
 
+	if (!data.length) {
+		console.warn('EMPTY: Saving empty array on "%s"', id);
+	}
+
 	writeIfNew(data_dir + '/' + slug(id) + '.csv', d3.csv.format(data));
 };
 
