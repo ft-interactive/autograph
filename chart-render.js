@@ -23,8 +23,8 @@ function createLines(data) {
 		done: function (errors, window) {
 			window.d3 = d3.select(window.document);
 			var chartWidth = 304;
-			var chartHeight = 286;
-			var margin = { top: 100, left: 1, bottom: 50, right: 45 };
+			var chartHeight = 270;
+			var margin = { top: 100, left: 1, bottom: 50, right: 48 };
 			var plotWidth = chartWidth - (margin.left + margin.right);
 			var plotHeight = chartHeight - (margin.top + margin.bottom);
 			var dateFormat = d3.time.format('%Y-%m-%d');
@@ -100,7 +100,7 @@ function createLines(data) {
 
 					var valueAxis = d3.svg.axis()
 						.orient('right')
-						.ticks(6)
+						.ticks(3)
 						.tickSize(-plotWidth)
 						.scale(yScale);
 
