@@ -100,7 +100,7 @@ function createLines(data) {
 
 					var valueAxis = d3.svg.axis()
 						.orient('right')
-						.ticks(3)
+						.ticks(4)
 						.tickSize(-plotWidth)
 						.scale(yScale);
 
