@@ -54,6 +54,12 @@ function fetch_endpoint(query) {
 		return;
 	}
 
+	if (!query.seriesid) {
+		console.error('Series ID missing. id="%s"', query.id);
+		return;
+	}
+
+
 	const factory = apis[api_name];
 
 	if (!factory) {
