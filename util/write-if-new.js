@@ -18,8 +18,6 @@ module.exports = function (path, data) {
 		fs.writeFileSync(path, data);
 		console.log('OVERWRITE: %s', path);
 		return true;
-	} else {
-		console.log('UNCHANGED: %s', path);
 	}
 
 	return false;

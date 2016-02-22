@@ -45,12 +45,12 @@ function fetch_endpoint(query) {
 	const api_name = (query.api || '').toLowerCase();
 
 	if (!api_name) {
-		console.error('Query needs an api property');
+		console.error('API not defined. id="%s"', query.id);
 		return;
 	}
 
 	if (!query.id) {
-		console.error('Cannot process a job without an ID. Know details', query);
+		console.error('Job ID missing. api=%s series_id=%s', query.id, query.seriesid);
 		return;
 	}
 
@@ -63,12 +63,12 @@ function fetch_endpoint(query) {
 	const factory = apis[api_name];
 
 	if (!factory) {
-		console.error('"%s" is not a known API on "%s"', query.api, query.id);
+		console.error('Unknown API. api=%s id="%s"', query.api, query.id);
 		return;
 	}
 	
 	if (ignored_apis.indexOf(api_name) !== -1) {
-		console.warn('"%s" is currently an ignored API on "%s"', api_name, query.id);
+		console.warn('API currently being ignored. api=%s id="%s" series_id=%s', api_name, query.id, query.seriesid);
 		return;
 	}
 

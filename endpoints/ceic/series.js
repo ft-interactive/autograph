@@ -46,7 +46,7 @@ module.exports = function (job, options) {
 		try {
 			const seriesInfo = data.isearch_response.extendedSeriesList[0].code[0];
 			if (seriesInfo !== job.params.series_id) {
-				throw new Error('Data returned is not for the requested series');
+				throw new Error('Data returned is not for the requested series series_id=%s id="%s"', job.params.series_id, job.id);
 			}
 		} catch (e) {
 			throw new Error('Invalid CEIC response XML. Cannot verify the series code ' + job.params.series_id);
