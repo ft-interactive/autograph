@@ -36,6 +36,13 @@ module.exports = function (job, options) {
 					data.isearch_response.status[0] &&
 					data.isearch_response.status[0].message) {
 			if (data.isearch_response.status[0].message[0] === 'Incompleted response') {
+				try {
+					if (data.isearch_response.extendedSeriesList[0].status[0].message[0] === 'User has not subscribed to the selected product') {
+						console.error('Not subscribed to CEIC data series_id=%s id="%s"', job.params.series_id, job.id);
+						job.data = []
+						return job;
+					}
+				} catch (e) {}
 				throw new Error('Unknown CEIC series ' + job.params.series_id)
 			} else if (data.isearch_response.status[0].message[0] === 'Unexpected Exception' &&
 										data.isearch_response.status[0].code[0] === 'JSONERROR') {
