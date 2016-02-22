@@ -36,8 +36,12 @@ console.log('Checking data');
 request({ url: process.env.QUERIES_URL, json: true })
 	.then(data => {
 		return bluebird.map(data, fetch_endpoint).catch(handle_endpoint__exception);
+	})
+	.then(() => {
+		process.exit(0);
 	}).catch(reason => {
 		console.dir(reason);
+		process.exit(1);
 	});
 
 function fetch_endpoint(query) {
