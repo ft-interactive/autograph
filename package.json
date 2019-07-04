@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "./bin/autograph",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": [
     "Tom Pearson <tom.pearson@ft.com>",
@@ -21,6 +23,8 @@
     "request": "^2.67.0",
     "request-promise": "^2.0.0",
     "speakingurl": "^8.0.2",
-    "xml2js": "^0.4.15"
-  }
+    "xml2js": "^0.4.15",
+    "snyk": "^1.189.0"
+  },
+  "snyk": true
 }
